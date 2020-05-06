@@ -3,11 +3,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import visualization
+import convergence
 
 
 
-def test():
-    pass
+def cmp(point, max_val, fss_point, fss_max_value):
+    print("теоритический максимум: ", point)
+    print("значение в точке максимума: ", max_val)
+    print("максимум найденный FSS: ", fss_point)
+    print("значение в максимуме FSS: ", fss_max_value)
+    print("|x' - x|: ", max(np.abs(fss_point - point)))
+    print("|f(x') - f(x)| :", np.abs(fss_max_value - max_val))
 
 
 def test_1():
@@ -22,8 +28,12 @@ def test_1():
         func=lambda x: -0.1 * (x[0] * x[0] + x[1] * x[1]) + 20,
     )
 
-    v = visualization.Visualization(fss.history())
-    v.start(saved=True, filename="test_1.mp4")
+    # v = visualization.Visualization(fss.history())
+    #     # v.start(saved=True, filename="test_1.mp4")
+    f, x = fss.max()
+    cmp(np.array([0,0]), 20, x, f)
+    c = convergence.Convergence(fss.history(), 20)
+    c.show()
 
 def test_2():
     fss = FishSchoolSearch(
@@ -37,8 +47,10 @@ def test_2():
         func=lambda x: 10 * (np.sin(0.1*x[0]) + np.sin(0.1*x[1])) + 20,
     )
 
-    v = visualization.Visualization(fss.history())
-    v.start()
+    f, x = fss.max()
+    cmp(np.array([10*np.pi/2, 10*np.pi/2]), 40, x, f)
+    c = convergence.Convergence(fss.history(), 40)
+    c.show()
 
 def test_3():
     def rosenbrock_func(x, y):
@@ -55,8 +67,30 @@ def test_3():
         func=lambda x: 200 - rosenbrock_func(x[0], x[1]),
     )
 
-    v = visualization.Visualization(fss.history())
-    v.start(saved=True, filename="rosenbrock2.mp4")
+    f, x = fss.max()
+    cmp(np.array([0, 0]), 200, x, f)
+    c = convergence.Convergence(fss.history(), 200)
+    c.show()
+
+def test_6():
+    def rosenbrock_func(x):
+        return sum((1 - x[i])*(1 - x[i]) + 100*(x[i+1] - x[i]*x[i])*(x[i+1] - x[i]*x[i]) for i in range(1, len(x) - 1, 1))
+
+    fss = FishSchoolSearch(
+        lower_bound_point=[-10, -10, -10, -10],
+        higher_bound_point=[10, 10, 10, 10],
+        population_size=50,
+        iteration_count=500,
+        individual_step_start=1,
+        individual_step_final=0.01,
+        weight_scale=50,
+        func=lambda x: 200 - rosenbrock_func(x),
+    )
+
+    f, x = fss.max()
+    cmp(np.array([1, 1, 1, 1]), 200, x, f)
+    c = convergence.Convergence(fss.history(), 200)
+    c.show()
 
 def test_4():
     def ackley_func(x, y):
@@ -96,8 +130,8 @@ def test_5():
     v.start(saved=True, filename="holder.mp4")
 
 if __name__ == '__main__':
-    test_1()
-    test_2()
-    test_3()
-    test_4()
-    test_5()
+    test_6()
+    # test_2()
+    # test_3()
+    # test_4()
+    # test_5()

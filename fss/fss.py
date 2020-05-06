@@ -1,6 +1,5 @@
 import numpy as np
-import math, \
-    random
+import math
 from typing import Iterable
 from typing import Callable
 
@@ -157,7 +156,7 @@ class FishSchoolSearch:
 
     def __fish_in_shape(self, point: np.core.ndarray) -> bool:
         r"""
-        Возращает True если точка внутри гиперкубе, иначе False
+        Возращает True если точка внутри области, иначе False
         :param point:
         :type point:
         :return:
