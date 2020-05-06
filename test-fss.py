@@ -23,8 +23,7 @@ def test_1():
     )
 
     v = visualization.Visualization(fss.history())
-    v.start()
-
+    v.start(saved=True, filename="test_1.mp4")
 
 def test_2():
     fss = FishSchoolSearch(
@@ -41,5 +40,64 @@ def test_2():
     v = visualization.Visualization(fss.history())
     v.start()
 
+def test_3():
+    def rosenbrock_func(x, y):
+        return (1 - x)*(1 - x) + 100*(y - x*x)*(y - x*x)
+
+    fss = FishSchoolSearch(
+        lower_bound_point=[-1, -1],
+        higher_bound_point=[2, 2],
+        population_size=50,
+        iteration_count=100,
+        individual_step_start=1,
+        individual_step_final=0.01,
+        weight_scale=50,
+        func=lambda x: 200 - rosenbrock_func(x[0], x[1]),
+    )
+
+    v = visualization.Visualization(fss.history())
+    v.start(saved=True, filename="rosenbrock2.mp4")
+
+def test_4():
+    def ackley_func(x, y):
+        return -20 * np.exp(-0.2*np.sqrt(0.5*(x*x + y*y))) \
+               - np.exp(0.5*(np.cos(2*np.pi*x) + np.cos(2*np.pi*y))) + np.exp(1) + 20
+
+    fss = FishSchoolSearch(
+        lower_bound_point=[-4, -4],
+        higher_bound_point=[4, 4],
+        population_size=50,
+        iteration_count=100,
+        individual_step_start=3,
+        individual_step_final=0.01,
+        weight_scale=50,
+        func=lambda x: 20 - ackley_func(x[0], x[1]),
+    )
+
+    v = visualization.Visualization(fss.history())
+    v.start()
+
+def test_5():
+    def holder_func(x, y):
+        return np.abs(np.sin(x)*np.cos(y)*np.exp(np.abs(1 - np.sqrt(x*x + y*y)/np.pi)))
+
+    fss = FishSchoolSearch(
+        lower_bound_point=[-10, -10],
+        higher_bound_point=[10, 10],
+        population_size=50,
+        iteration_count=100,
+        individual_step_start=3,
+        individual_step_final=0.01,
+        weight_scale=50,
+        func=lambda x: holder_func(x[0], x[1]),
+    )
+
+    v = visualization.Visualization(fss.history())
+    v.start(saved=True, filename="holder.mp4")
+
 if __name__ == '__main__':
+    test_1()
     test_2()
+    test_3()
+    test_4()
+    test_5()

@@ -26,11 +26,6 @@ class Visualization:
 
         pointer, = ax.plot3D([], [], marker="8", linestyle='None', markersize=2, color='red')
 
-        props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-
-        text = ax.text(0.05, 0.95, 0,  "", transform=ax.transAxes, fontsize=14,
-                verticalalignment='top', bbox=props)
-
         def init():
             pointer.set_data([], [])
             return pointer,
@@ -41,20 +36,17 @@ class Visualization:
             z = np.array([fish.get("fitness_value") for fish in fishes], dtype=np.core.float64)
             pointer.set_data_3d(x, y, z)
 
-            textstr = r'$max=%.10f$' % (max(z),)
-            text.set_text(textstr)
-
-            return pointer, text
+            return pointer,
 
         if not saved:
             ani = FuncAnimation(fig, update, frames=self.history.get("steps"),
                                 init_func=init, blit=True, interval=self.timeout)
             plt.show()
         else:
-            metadata = dict(title='Movie Test', artist='Matplotlib',
-                            comment='Movie support!')
+            metadata = dict(title='Visualization', artist='Matplotlib',
+                            comment='')
             movie_writer = FFMpegWriter(fps=5, metadata=metadata)
-            with movie_writer.saving(fig, outfile=filename, dpi=1000):
+            with movie_writer.saving(fig, outfile=filename, dpi=800):
                 for step in self.history.get("steps"):
                     update(step)
                     movie_writer.grab_frame()
