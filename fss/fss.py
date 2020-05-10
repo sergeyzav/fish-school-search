@@ -2,6 +2,7 @@ import numpy as np
 import math
 from typing import Iterable
 from typing import Callable
+import time
 
 
 class FishSchoolSearch:
@@ -41,6 +42,7 @@ class FishSchoolSearch:
             weight_scale: float,
             func: Callable[[Iterable[float]], float]
     ):
+        time_ = time.time()
         self.__lower_bound_point = np.array(lower_bound_point, dtype=np.core.float64)
         self.__higher_bound_point = np.array(higher_bound_point, dtype=np.core.float64)
         self.__population_size = np.core.int64(population_size)
@@ -91,6 +93,8 @@ class FishSchoolSearch:
                                      - self.__individual_step_final) / self.__iteration_count
 
             self.log()
+
+        self.time = time.time() - time_
 
     def max(self):
         max_ = 0

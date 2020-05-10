@@ -7,13 +7,14 @@ import convergence
 
 
 
-def cmp(point, max_val, fss_point, fss_max_value):
+def cmp(point, max_val, fss_point, fss_max_value, fss):
     print("теоритический максимум: ", point)
     print("значение в точке максимума: ", max_val)
     print("максимум найденный FSS: ", fss_point)
     print("значение в максимуме FSS: ", fss_max_value)
     print("|x' - x|: ", max(np.abs(fss_point - point)))
     print("|f(x') - f(x)| :", np.abs(fss_max_value - max_val))
+    print("time: ", fss.time, "sec")
 
 
 def test_1():
@@ -31,7 +32,7 @@ def test_1():
     # v = visualization.Visualization(fss.history())
     #     # v.start(saved=True, filename="test_1.mp4")
     f, x = fss.max()
-    cmp(np.array([0,0]), 20, x, f)
+    cmp(np.array([0,0]), 20, x, f, fss)
     c = convergence.Convergence(fss.history(), 20)
     c.show()
 
@@ -48,7 +49,7 @@ def test_2():
     )
 
     f, x = fss.max()
-    cmp(np.array([10*np.pi/2, 10*np.pi/2]), 40, x, f)
+    cmp(np.array([10*np.pi/2, 10*np.pi/2]), 40, x, f, fss)
     c = convergence.Convergence(fss.history(), 40)
     c.show()
 
@@ -68,7 +69,7 @@ def test_3():
     )
 
     f, x = fss.max()
-    cmp(np.array([0, 0]), 200, x, f)
+    cmp(np.array([0, 0]), 200, x, f, fss)
     c = convergence.Convergence(fss.history(), 200)
     c.show()
 
@@ -77,8 +78,8 @@ def test_6():
         return sum((1 - x[i])*(1 - x[i]) + 100*(x[i+1] - x[i]*x[i])*(x[i+1] - x[i]*x[i]) for i in range(1, len(x) - 1, 1))
 
     fss = FishSchoolSearch(
-        lower_bound_point=[-10, -10, -10, -10],
-        higher_bound_point=[10, 10, 10, 10],
+        lower_bound_point=[-1, -1, -1, -1],
+        higher_bound_point=[2, 2, 2, 2],
         population_size=50,
         iteration_count=500,
         individual_step_start=1,
@@ -88,7 +89,7 @@ def test_6():
     )
 
     f, x = fss.max()
-    cmp(np.array([1, 1, 1, 1]), 200, x, f)
+    cmp(np.array([1, 1, 1, 1]), 200, x, f, fss)
     c = convergence.Convergence(fss.history(), 200)
     c.show()
 
@@ -108,8 +109,10 @@ def test_4():
         func=lambda x: 20 - ackley_func(x[0], x[1]),
     )
 
-    v = visualization.Visualization(fss.history())
-    v.start()
+    f, x = fss.max()
+    cmp(np.array([0, 0]), 20, x, f, fss)
+    c = convergence.Convergence(fss.history(), 20)
+    c.show()
 
 def test_5():
     def holder_func(x, y):
@@ -119,19 +122,22 @@ def test_5():
         lower_bound_point=[-10, -10],
         higher_bound_point=[10, 10],
         population_size=50,
-        iteration_count=100,
-        individual_step_start=3,
+        iteration_count=200,
+        individual_step_start=5,
         individual_step_final=0.01,
         weight_scale=50,
         func=lambda x: holder_func(x[0], x[1]),
     )
 
-    v = visualization.Visualization(fss.history())
-    v.start(saved=True, filename="holder.mp4")
+    f, x = fss.max()
+    cmp(np.array([8.05502, -9.66459]), 19.2085, x, f, fss)
+    c = convergence.Convergence(fss.history(), 19.2085)
+    c.show()
 
 if __name__ == '__main__':
+    test_1()
+    test_2()
+    test_3()
+    test_4()
+    test_5()
     test_6()
-    # test_2()
-    # test_3()
-    # test_4()
-    # test_5()
